@@ -1,11 +1,9 @@
-import numpy as np
-import pandas as pd
-from pandas import Series, DataFrame
-import scipy.stats as stats
-import scipy.optimize as opt
 # encoding: UTF-8
+
+
 import sys
 import hashlib
+
 
 class Encryption(object):
     def __init__(self, source, mode='md5', *salt):
@@ -18,30 +16,26 @@ class Encryption(object):
         return 'md5 object : %s' % self.source
 
     def cal(self):  # 调用计算函数
+        temper=''
         if self.mode == '1':
-            str = hashlib.md5()
+            temper = hashlib.md5()
         elif self.mode == '2':
-            str = hashlib.sha1()
-
-
-
-            # print(ss)
-        str.update(self.source.encode('utf-8'))
-        # print(str.hexdigest())
-        return str.hexdigest()
+            temper = hashlib.sha1()
+        temper.update(self.source.encode('utf-8'))
+        return password_str.hexdigest()
 
     __repr__ = __str__
 
 
 if __name__ == '__main__':
     if '2.7' in sys.version:
-        str = raw_input('请输入密码: ')
+        password_str = raw_input('请输入密码: ')
         choose = raw_input('请选择加密模式 1.MD5 2.SHA1 :')
     else:
-        str = input('请输入密码: ')
+        password_str = input('请输入密码: ')
         choose = input('请选择加密模式 1.MD5 2.SHA1 :')
 
-    s = Encryption(str, choose)
+    s = Encryption(password_str, choose)
     md5str1 = s.cal()
     print('加密结果是：' + md5str1)
     exit()
