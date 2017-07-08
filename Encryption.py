@@ -7,7 +7,7 @@ import scipy.optimize as opt
 import sys
 import hashlib
 
-class Passw(object):
+class Encryption(object):
     def __init__(self, source, mode='md5', *salt):
         self.source = source
         self.mode = mode
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         str = input('请输入密码: ')
         choose = input('请选择加密模式 1.MD5 2.SHA1 :')
 
-    s = Passw(str, choose)
+    s = Encryption(str, choose)
     md5str1 = s.cal()
     print('加密结果是：' + md5str1)
     exit()
