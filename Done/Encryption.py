@@ -22,7 +22,7 @@ class Encryption(object):
         elif self.mode == '2':
             temper = hashlib.sha1()
         temper.update(self.source.encode('utf-8'))
-        return password_str.hexdigest()
+        return temper.hexdigest()
 
     __repr__ = __str__
 

@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/untitled2.iml" filepath="$PROJECT_DIR$/.idea/untitled2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../vnpy/.idea/vnpy.iml" filepath="$PROJECT_DIR$/../vnpy/.idea/vnpy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/testpy.iml" filepath="$PROJECT_DIR$/.idea/testpy.iml" />
+      <module fileurl="file://Z:\开发\Python\testpy\.idea\untitled2.iml" filepath="Z:\开发\Python\testpy\.idea\untitled2.iml" />
+      <module fileurl="file://Z:\开发\Python\vnpy\.idea\vnpy.iml" filepath="Z:\开发\Python\vnpy\.idea\vnpy.iml" />
     </modules>
   </component>
 </project>
