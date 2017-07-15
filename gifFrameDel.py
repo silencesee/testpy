@@ -6,6 +6,8 @@ import random
 import os
 import sys
 
+class gi(object):
+    def __init__(self,):
 
 def randomDel(parent,filename):
     gifpath = parent + '\\' + filename;
