@@ -3,8 +3,7 @@
 
 import sys
 import hashlib
-
-
+import pandas
 class Encryption(object):
     """
     输入指定字符串，将输出对应的加密结果
