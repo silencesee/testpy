@@ -6,28 +6,32 @@ import random
 import os
 import sys
 
+
 class gi(object):
-    def __init__(self,inputPath,outputPath):
+    def __init__(self, inputPath, outputPath):
         self.inputPath = inputPath
         self.outputPath = outputPath
+
     def getBigGIF(self):
         abspath = os.path.abspath(os.path.dirname(sys.argv[0]))
+        fileSize = []
         fullFname = []
         for parent, dirnames, filenames in os.walk(abspath + self.inputPath):  # 三个参数：分别返回1.父目录 2.所有文件夹名字（不含路径） 3.所有文件名字
-            # for dirname in dirnames:  # 输出文件夹信息
-            #     print("父目录: ".decode('gbk').encode('utf-8') + parent.decode('gbk').encode('utf-8'))
-            #     print("子目录 ".decode('gbk').encode('utf-8') + dirname.decode('gbk').encode('utf-8'))
 
             for filename in filenames:  # 输出文件信息
 
                 if filename[-3:] == 'gif':
-                    fullFname +=[parent + '\\' + filename]
-                    fileFormat = os.stat(fullFname[-1])  #  获取文件格式
-                    fileSize = fileFormat.st_size / 1024 / 1024  #  计算并判断文件大小是否超过2M
-                    if fileSize > 2:
-                        randomDel(parent, filename)
+                    picPath = parent + '\\' + filename
+                    fullFname += [picPath]
+                    fileFormat = os.stat(picPath)  # 获取文件格式
+                    fileSize += fileSize + [fileFormat.st_size / 1024 / 1024]  #
+                    with Image.open(picPath) as im:
+                        (x,y) = im.size
+            fullFname=pd.Series(fullFname)
+            fileSize = pd.Series(fileSize)
+            self.gifInfo = pd.concat([fullFname,fileSize],axis=1)
 
-def randomDel(parent,filename):
+def randomDel(parent, filename):
     gifpath = parent + '\\' + filename;
     with Image.open(gifpath) as im:
         frames = [f.copy() for f in ImageSequence.Iterator(im)]
@@ -48,22 +52,4 @@ def randomDel(parent,filename):
 
 
 
-path = os.path.abspath(os.path.dirname(sys.argv[0]))
-
-delRate = 5
-gif_source = '\\gifsource'
-gif_output = '\\gifopt'
-for parent, dirnames, filenames in os.walk(path+gif_source):  # 三个参数：分别返回1.父目录 2.所有文件夹名字（不含路径） 3.所有文件名字
-    # for dirname in dirnames:  # 输出文件夹信息
-    #     print("父目录: ".decode('gbk').encode('utf-8') + parent.decode('gbk').encode('utf-8'))
-    #     print("子目录 ".decode('gbk').encode('utf-8') + dirname.decode('gbk').encode('utf-8'))
-
-    for filename in filenames:  # 输出文件信息
-
-        if filename[-3:]=='gif':
-
-            fileFormat = os.stat(parent + '\\' + filename)
-            fileSize = fileFormat.st_size / 1024 / 1024
-            if fileSize>2:
-                randomDel(parent,filename)
 
