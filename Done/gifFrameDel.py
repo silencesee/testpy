@@ -6,7 +6,7 @@ import random
 import os
 import sys
 from math import sqrt
-import numpy as np
+
 
 
 class gi(object):
