@@ -4,15 +4,14 @@ from PIL import Image, ImageSequence
 import pandas as pd
 import random
 import os
-import sys
 from math import sqrt
 
 
-
-class gi(object):
-    def __init__(self, inputPath, outputPath):
-        self.inputPath = inputPath  # 绝对路径
-        self.outputPath = outputPath  # 绝对路径
+class Gi(object):
+    def __init__(self, input_path, output_path):
+        self.inputPath = input_path  # 绝对路径
+        self.outputPath = output_path  # 绝对路径
+        self.gifInfo = pd.DataFrame()
 
     def __str__(self):
 
@@ -20,108 +19,128 @@ class gi(object):
 
     __repr__ = __str__
 
-    def GetBigGIF(self, sizeGate):
-        abspath = os.path.abspath(os.path.dirname(sys.argv[0]))
-        fileSize = []
-        fullFname = []
+    def get_target_gif(self, size_gate):
+        file_size = []
+        full_fname = []
         width = []
         heigh = []
-        fileN = []
-        delRate = []
-        resizeRate=[]
+        file_n = []
+        del_rate = []
+        resize_rate = []
         for parent, dirnames, filenames in os.walk(self.inputPath):  # 三个参数：分别返回1.父目录 2.所有文件夹名字（不含路径） 3.所有文件名字
             for filename in filenames:  # 输出文件信息
-                if filename[-3:] == 'gif':
-                    picPath = parent + '\\' + filename
-                    fullFname += [picPath]
-                    fileFormat = os.stat(picPath)  # 获取文件格式
-                    fileSize += [fileFormat.st_size / 1024 / 1024]  #
-                    fileN += [filename]
-                    delRate += [(fileSize[-1]-1.85) / fileSize[-1]]
-                    resizeRate += [sqrt(2.8/fileSize[-1])]
-                    with Image.open(picPath) as im:
+                if filename[-3:] == 'gif' and filename[0:7] != 'Reverse':
+                    pic_path = parent + '\\' + filename
+                    full_fname += [pic_path]
+                    file_format = os.stat(pic_path)  # 获取文件格式
+                    file_size += [file_format.st_size / 1024 / 1024]  #
+                    file_n += [filename]
+                    del_rate += [(file_size[-1] - 1.85) / file_size[-1]]
+                    resize_rate += [sqrt(2.8 / file_size[-1])]
+                    with Image.open(pic_path) as im:
                         (x, y) = im.size
                         width += [x]
                         heigh += [y]
 
-            fullFname = pd.Series(fullFname)
-            fileN = pd.Series(fileN)
-            gifB = pd.Series(fileSize)
-            width = pd.Series(width)
-            heigh = pd.Series(heigh)
-            delRate = pd.Series(delRate)
-            resizeRate = pd.Series(resizeRate)
-            self.gifInfo = pd.concat([fullFname, fileN, gifB, width, heigh,delRate,resizeRate], axis=1)
-            self.gifInfo.columns = ['path', 'filename', 'gsize', 'width', 'heigh', 'delRate','resizeRate']
-            self.gifInfo = self.gifInfo[self.gifInfo.gsize > 2]
+        full_fname = pd.Series(full_fname)
+        file_n = pd.Series(file_n)
+        gif_b = pd.Series(file_size)
+        width = pd.Series(width)
+        heigh = pd.Series(heigh)
+        del_rate = pd.Series(del_rate)
+        resize_rate = pd.Series(resize_rate)
+        self.gifInfo = pd.concat([full_fname, file_n, gif_b, width, heigh, del_rate, resize_rate], axis=1)
+        self.gifInfo.columns = ['path', 'filename', 'gsize', 'width', 'heigh', 'delRate', 'resizeRate']
+        if size_gate > 0:
+            self.gifInfo = self.gifInfo[self.gifInfo.gsize > size_gate]
+
         return
 
-    def resize(self, wGate):
-        if wGate==0:
+    def resize(self, w_gate):
+        if w_gate == 0:
             if self.inputPath == self.outputPath:
-                [(os.popen('gifsicle.exe  --batch  --scale ' + str(y) + ' ' + x)).read() for x in self.gifInfo.path  for y in self.gifInfo.resizeRate]
+                [(os.popen('gifsicle.exe  --batch  --scale ' + str(x[1].resizeRate) + ' ' + x[1].path)).read() for x in
+                 self.gifInfo.iterrows()]
             else:
-                [(os.popen('gifsicle.exe  --scale ' + str(y) + ' ' + x[1].path + ' > ' + self.outputPath + '\\' + x[1].filename)).read() for x in self.gifInfo.iterrows() for y in self.gifInfo.resizeRate]
+                [(os.popen(
+                    'gifsicle.exe  --scale ' + str(x[1].resizeRate) + ' ' + x[1].path + ' > ' + self.outputPath + '\\' +
+                    x[1].filename)).read() for x in self.gifInfo.iterrows()]
             return
         else:
 
             if self.inputPath == self.outputPath:
-                [(os.popen('gifsicle.exe  --batch  --scale ' + str(wGate) + ' ' + x)).read() for x in self.gifInfo.path]
+                [(os.popen('gifsicle.exe  --batch  --scale ' + str(w_gate) + ' ' + x)).read() for x in
+                 self.gifInfo.path]
             else:
-                [(os.popen('gifsicle.exe  --scale ' + str(wGate) + ' ' + x[1].path + ' > ' + self.outputPath + '\\' + x[
-                    1].filename)).read() for x in self.gifInfo.iterrows()]
+                [(
+                     os.popen(
+                         'gifsicle.exe  --scale ' + str(w_gate) + ' ' + x[1].path + ' > ' + self.outputPath + '\\' + x[
+                             1].filename)).read() for x in self.gifInfo.iterrows()]
             return
 
-    def randomDel(self):
-        def delframe(inputpath, outputpath, filename,delRate):
+    def random_del(self):
+        def del_frame(rd_inputpath, rd_outputpath, filename, del_rate):
             # print filename
-            with Image.open(inputpath + '\\' + filename) as im:
+            with Image.open(rd_inputpath + '\\' + filename) as im:
                 frames = [f.copy() for f in ImageSequence.Iterator(im)]
-                pdframe = pd.Series(frames)
-                detNum = int(frames.__len__() * delRate)  # 计算出要删除的帧数
-                choose = raw_input(filename +' 总帧数'+str(frames.__len__())+ '预计删除' + str(detNum) + '帧，是否继续 Y/N ：\n')
-                if choose.upper() == 'N': return
-                delID = [random.randrange(0, frames.__len__()) for i in range(detNum)]  # 计算出保留的对应帧id
-                delID = set(delID)
-                delID = list(delID)
+                # pdframe = pd.Series(frames)
+                det_num = int(frames.__len__() * del_rate)  # 计算出要删除的帧数
+                choose = raw_input(filename + ' 总帧数' + str(frames.__len__()) + '预计删除' + str(det_num) + '帧，是否继续 Y/N ：\n')
+                if choose.upper() == 'N':
+                    return
+                del_i_d = [random.randrange(0, frames.__len__()) for i in range(det_num)]  # 计算出保留的对应帧id
+                del_i_d = set(del_i_d)
+                del_i_d = list(del_i_d)
 
-                delID.sort()
+                del_i_d.sort()
 
-                f = lambda x: '#' + str(x)
-                delID_str = (map(f, delID))
-                delID_str = reduce(lambda x, y: x + ' ' + y, delID_str)
+                del_id_str = (map(lambda x1: '#' + str(x1), del_i_d))
+                del_id_str = reduce(lambda x2, y2: x2 + ' ' + y2, del_id_str)
 
-                # newFrames = list(pdframe[delID].values)
+                # newFrames = list(pdframe[del_i_d].values)
                 # newFrames[0].save(outputpath + '\\' + filename, save_all=True, append_images=newFrames[1:])
-                if inputpath == outputpath:
-                    cmd = 'gifsicle.exe  --batch' + ' ' + inputpath + '\\' + filename + ' --delete ' + delID_str
+                if rd_inputpath == rd_outputpath:
+                    cmd = 'gifsicle.exe  --batch' + ' ' + rd_inputpath + '\\' + filename + ' --delete ' + del_id_str
                 else:
-                    cmd = 'gifsicle.exe ' + inputpath + '\\' + filename + ' --delete ' + delID_str + ' > ' + outputpath + '\\' + filename
+                    cmd = 'gifsicle.exe ' + rd_inputpath + '\\' + filename + ' --delete ' + del_id_str + ' > ' + rd_outputpath + '\\' + filename
                 (os.popen(cmd)).read()
             return
 
-        [delframe(self.inputPath, self.outputPath, x,y) for x in self.gifInfo.filename for y in self.gifInfo.delRate]
+        [del_frame(self.inputPath, self.outputPath, x, y) for x in self.gifInfo.filename for y in self.gifInfo.delRate]
         return
 
+    def reverse(self):
 
-def resize(outputpath):
-    resizeGIF = gi(outputpath, outputpath)
-    resizeGIF.GetBigGIF(2)  # 找出文件大小超过2M的gif
-    resizeGIF.resize(0)
-    checkDel(outputpath)
+        [(os.popen('gifsicle.exe ' + x[1].path + ' #-1-0 > ' + self.outputPath + '\\Reverse_' + x[1].filename)).read()
+         for x in self.gifInfo.iterrows()]
 
 
-def checkDel(outputpath):
-    delGIF = gi(outputpath, outputpath)
-    delGIF.GetBigGIF(2)  # 找出文件大小超过2M的gif
-    delGIF.randomDel()
-    resize(outputpath)
+def resize(re_outputpath):
+    resize_gif = Gi(re_outputpath, re_outputpath)
+    resize_gif.get_target_gif(2)  # 找出文件大小超过2M的gif
+    resize_gif.resize(0)
+    check_del(re_outputpath)
+
+
+def check_del(del_outputpath):
+    del_gif = Gi(del_outputpath, del_outputpath)
+    del_gif.get_target_gif(2)  # 找出文件大小超过2M的gif
+    del_gif.random_del()
+    resize(del_outputpath)
+
+
+def reverse(re_outputpath):  # 生成倒序播放的图片
+    reverse_gif = Gi(re_outputpath, re_outputpath)
+    reverse_gif.get_target_gif(0)
+    reverse_gif.reverse()
 
 
 if __name__ == '__main__':
     inputpath = 'Z:\\develop\\python\\testpy\\gifsource'
     outputpath = 'Z:\\develop\\python\\testpy\\gitopt'
-    sourceGif = gi(inputpath, outputpath)
-    sourceGif.GetBigGIF(2)  # 找出文件大小超过2M的gif
+    reverse(outputpath)
+    sourceGif = Gi(inputpath, outputpath)
+    sourceGif.get_target_gif(2)  # 找出文件大小超过2M的gif
     sourceGif.resize(0.8)  # 缩小为原先的0.
-    checkDel(outputpath)
+    check_del(outputpath)
+    reverse(outputpath)
