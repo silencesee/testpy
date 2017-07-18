@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from dataapi import Client
+from Done.Uquant.dataapi import Client
 
 if __name__ == "__main__":
     try:
