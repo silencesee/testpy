@@ -57,7 +57,7 @@ class Gi(object):
         return
 
     def resize(self, w_gate):
-        if w_gate == 0:
+        if w_gate == 0:  # 参数为0时，默认将文件目标文件调整到大约2.8M的大小
             if self.inputPath == self.outputPath:
                 [(os.popen('gifsicle.exe  --batch  --scale ' + str(x[1].resizeRate) + ' ' + x[1].path)).read() for x in
                  self.gifInfo.iterrows()]
@@ -85,8 +85,8 @@ class Gi(object):
                 frames = [f.copy() for f in ImageSequence.Iterator(im)]
                 # pdframe = pd.Series(frames)
                 det_num = int(frames.__len__() * del_rate)  # 计算出要删除的帧数
-                choose = raw_input(filename + ' 总帧数' + str(frames.__len__()) + '预计删除' + str(det_num) + '帧，是否继续 Y/N ：\n')
-                if choose.upper() == 'N':
+                # choose = raw_input(filename + ' 总帧数' + str(frames.__len__()) + '预计删除' + str(det_num) + '帧，是否继续 Y/N ：\n')
+                if det_num / frames.__len__() > 0.4:  #删帧率超过20%则跳过删帧处理，等进一步调整大小
                     return
                 del_i_d = [random.randrange(0, frames.__len__()) for i in range(det_num)]  # 计算出保留的对应帧id
                 del_i_d = set(del_i_d)
@@ -106,7 +106,7 @@ class Gi(object):
                 (os.popen(cmd)).read()
             return
 
-        [del_frame(self.inputPath, self.outputPath, x, y) for x in self.gifInfo.filename for y in self.gifInfo.delRate]
+        [del_frame(self.inputPath, self.outputPath, x, y) for x, y in zip(self.gifInfo.filename, self.gifInfo.delRate)]
         return
 
     def reverse(self):
@@ -119,28 +119,34 @@ def resize(re_outputpath):
     resize_gif = Gi(re_outputpath, re_outputpath)
     resize_gif.get_target_gif(2)  # 找出文件大小超过2M的gif
     resize_gif.resize(0)
-    check_del(re_outputpath)
+    if resize_gif.gifInfo.gsize.any():
+        check_del(re_outputpath)  # 再递归检查是否符合要求
+    return
 
 
-def check_del(del_outputpath):
+def check_del(del_outputpath):  #检查目标文件是否符合要求，若不符合则先进行删帧再调整大小
     del_gif = Gi(del_outputpath, del_outputpath)
     del_gif.get_target_gif(2)  # 找出文件大小超过2M的gif
-    del_gif.random_del()
-    resize(del_outputpath)
+    if del_gif.gifInfo.gsize.any():
+        del_gif.random_del()
+    if del_gif.gifInfo.gsize.any():
+        resize(del_outputpath)
+    return
 
 
 def reverse(re_outputpath):  # 生成倒序播放的图片
     reverse_gif = Gi(re_outputpath, re_outputpath)
     reverse_gif.get_target_gif(0)
     reverse_gif.reverse()
+    return
 
 
 if __name__ == '__main__':
     inputpath = 'Z:\\develop\\python\\testpy\\gifsource'
     outputpath = 'Z:\\develop\\python\\testpy\\gitopt'
-    reverse(outputpath)
+
     sourceGif = Gi(inputpath, outputpath)
     sourceGif.get_target_gif(2)  # 找出文件大小超过2M的gif
     sourceGif.resize(0.8)  # 缩小为原先的0.
-    check_del(outputpath)
+    check_del(outputpath)  #检查是否还有超限图片，并递归处理
     reverse(outputpath)
