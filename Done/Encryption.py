@@ -14,7 +14,7 @@ class Encryption(object):
     加密模式支持MD5 和 sha1
     """
 
-    def __init__(self, source, mode='md5', *salt):
+    def __init__(self, source, mode='1', *salt):
         self.source = source
         self.mode = mode
         self.salt = salt
