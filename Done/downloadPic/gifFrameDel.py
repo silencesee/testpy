@@ -1,21 +1,23 @@
-# -*- coding=utf-8 -*-
+# -*- coding=gbk -*-
 from __future__ import division
 from PIL import Image, ImageSequence
 import pandas as pd
 import random,shutil
 import os
 from math import sqrt
-
+import sys
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 class Gi(object):
     def __init__(self, input_path, output_path):
-        self.inputPath = input_path  # ç»å¯¹è·¯å¾„
-        self.outputPath = output_path  # ç»å¯¹è·¯å¾„
+        self.inputPath = input_path  # ¾ø¶ÔÂ·¾¶
+        self.outputPath = output_path  # ¾ø¶ÔÂ·¾¶
         self.gifInfo = pd.DataFrame()
 
     def __str__(self):
 
-        return 'ç›®æ ‡gifä¿¡æ¯ï¼Œè°ƒé˜…è¯·ä½¿ç”¨object.gifInfo'
+        return 'Ä¿±êgifĞÅÏ¢£¬µ÷ÔÄÇëÊ¹ÓÃobject.gifInfo'
 
     __repr__ = __str__
 
@@ -27,12 +29,12 @@ class Gi(object):
         file_n = []
         del_rate = []
         resize_rate = []
-        for parent, dirnames, filenames in os.walk(self.inputPath):  # ä¸‰ä¸ªå‚æ•°ï¼šåˆ†åˆ«è¿”å›1.çˆ¶ç›®å½• 2.æ‰€æœ‰æ–‡ä»¶å¤¹åå­—ï¼ˆä¸å«è·¯å¾„ï¼‰ 3.æ‰€æœ‰æ–‡ä»¶åå­—
-            for filename in filenames:  # è¾“å‡ºæ–‡ä»¶ä¿¡æ¯
+        for parent, dirnames, filenames in os.walk(self.inputPath):  # Èı¸ö²ÎÊı£º·Ö±ğ·µ»Ø1.¸¸Ä¿Â¼ 2.ËùÓĞÎÄ¼ş¼ĞÃû×Ö£¨²»º¬Â·¾¶£© 3.ËùÓĞÎÄ¼şÃû×Ö
+            for filename in filenames:  # Êä³öÎÄ¼şĞÅÏ¢
                 if filename[-3:] == 'gif' and filename[0:7] != 'Reverse':
                     pic_path = parent + '\\' + filename
                     full_fname += [pic_path]
-                    file_format = os.stat(pic_path)  # è·å–æ–‡ä»¶æ ¼å¼
+                    file_format = os.stat(pic_path)  # »ñÈ¡ÎÄ¼ş¸ñÊ½
                     file_size += [file_format.st_size / 1024 / 1024]  #
                     file_n += [filename]
                     del_rate += [(file_size[-1] - 1.85) / file_size[-1]]
@@ -58,7 +60,7 @@ class Gi(object):
         return
 
     def resize(self, w_gate):
-        if w_gate == 0:  # å‚æ•°ä¸º0æ—¶ï¼Œé»˜è®¤å°†æ–‡ä»¶ç›®æ ‡æ–‡ä»¶è°ƒæ•´åˆ°å¤§çº¦2.8Mçš„å¤§å°
+        if w_gate == 0:  # ²ÎÊıÎª0Ê±£¬Ä¬ÈÏ½«ÎÄ¼şÄ¿±êÎÄ¼şµ÷Õûµ½´óÔ¼2.8MµÄ´óĞ¡
             if self.inputPath == self.outputPath:
                 [(os.popen('gifsicle.exe  --batch  --scale ' + str(x[1].resizeRate) + ' ' + x[1].path)).read() for x in
                  self.gifInfo.iterrows()]
@@ -89,11 +91,11 @@ class Gi(object):
             with Image.open(rd_inputpath + '\\' + filename) as im:
                 frames = [f.copy() for f in ImageSequence.Iterator(im)]
                 # pdframe = pd.Series(frames)
-                det_num = int(frames.__len__() * del_rate)  # è®¡ç®—å‡ºè¦åˆ é™¤çš„å¸§æ•°
-                # choose = raw_input(filename + ' æ€»å¸§æ•°' + str(frames.__len__()) + 'é¢„è®¡åˆ é™¤' + str(det_num) + 'å¸§ï¼Œæ˜¯å¦ç»§ç»­ Y/N ï¼š\n')
-                if det_num / frames.__len__() > 0.4:  #åˆ å¸§ç‡è¶…è¿‡20%åˆ™è·³è¿‡åˆ å¸§å¤„ç†ï¼Œç­‰è¿›ä¸€æ­¥è°ƒæ•´å¤§å°
+                det_num = int(frames.__len__() * del_rate)  # ¼ÆËã³öÒªÉ¾³ıµÄÖ¡Êı
+                # choose = raw_input(filename + ' ×ÜÖ¡Êı' + str(frames.__len__()) + 'Ô¤¼ÆÉ¾³ı' + str(det_num) + 'Ö¡£¬ÊÇ·ñ¼ÌĞø Y/N £º\n')
+                if det_num / frames.__len__() > 0.4:  #É¾Ö¡ÂÊ³¬¹ı20%ÔòÌø¹ıÉ¾Ö¡´¦Àí£¬µÈ½øÒ»²½µ÷Õû´óĞ¡
                     return
-                del_i_d = [random.randrange(0, frames.__len__()) for i in range(det_num)]  # è®¡ç®—å‡ºä¿ç•™çš„å¯¹åº”å¸§id
+                del_i_d = [random.randrange(0, frames.__len__()) for i in range(det_num)]  # ¼ÆËã³ö±£ÁôµÄ¶ÔÓ¦Ö¡id
                 del_i_d = set(del_i_d)
                 del_i_d = list(del_i_d)
 
@@ -122,16 +124,16 @@ class Gi(object):
 
 def resize(re_outputpath):
     resize_gif = Gi(re_outputpath, re_outputpath)
-    resize_gif.get_target_gif(2)  # æ‰¾å‡ºæ–‡ä»¶å¤§å°è¶…è¿‡2Mçš„gif
+    resize_gif.get_target_gif(2)  # ÕÒ³öÎÄ¼ş´óĞ¡³¬¹ı2MµÄgif
     resize_gif.resize(0)
     if resize_gif.gifInfo.gsize.any():
-        check_del(re_outputpath)  # å†é€’å½’æ£€æŸ¥æ˜¯å¦ç¬¦åˆè¦æ±‚
+        check_del(re_outputpath)  # ÔÙµİ¹é¼ì²éÊÇ·ñ·ûºÏÒªÇó
     return
 
 
-def check_del(del_outputpath):  #æ£€æŸ¥ç›®æ ‡æ–‡ä»¶æ˜¯å¦ç¬¦åˆè¦æ±‚ï¼Œè‹¥ä¸ç¬¦åˆåˆ™å…ˆè¿›è¡Œåˆ å¸§å†è°ƒæ•´å¤§å°
+def check_del(del_outputpath):  #¼ì²éÄ¿±êÎÄ¼şÊÇ·ñ·ûºÏÒªÇó£¬Èô²»·ûºÏÔòÏÈ½øĞĞÉ¾Ö¡ÔÙµ÷Õû´óĞ¡
     del_gif = Gi(del_outputpath, del_outputpath)
-    del_gif.get_target_gif(2)  # æ‰¾å‡ºæ–‡ä»¶å¤§å°è¶…è¿‡2Mçš„gif
+    del_gif.get_target_gif(2)  # ÕÒ³öÎÄ¼ş´óĞ¡³¬¹ı2MµÄgif
     if del_gif.gifInfo.gsize.any():
         del_gif.random_del()
     if del_gif.gifInfo.gsize.any():
@@ -139,7 +141,7 @@ def check_del(del_outputpath):  #æ£€æŸ¥ç›®æ ‡æ–‡ä»¶æ˜¯å¦ç¬¦åˆè¦æ±‚ï¼Œè‹¥ä¸ç¬
     return
 
 
-def reverse(re_outputpath):  # ç”Ÿæˆå€’åºæ’­æ”¾çš„å›¾ç‰‡
+def reverse(re_outputpath):  # Éú³Éµ¹Ğò²¥·ÅµÄÍ¼Æ¬
     reverse_gif = Gi(re_outputpath, re_outputpath)
     reverse_gif.get_target_gif(0)
     reverse_gif.reverse()
@@ -147,11 +149,11 @@ def reverse(re_outputpath):  # ç”Ÿæˆå€’åºæ’­æ”¾çš„å›¾ç‰‡
 
 
 if __name__ == '__main__':
-    inputpath = 'Z:\\develop\\python\\testpy\\gifsource'
-    outputpath = 'Z:\\develop\\python\\testpy\\gitopt'
+    inputpath = 'E:\\ÎÒµÄ¼á¹ûÔÆ\\³õÑ¡'
+    outputpath = 'E:\\ÎÒµÄ¼á¹ûÔÆ\\ÒÑµ÷Õû'
 
     sourceGif = Gi(inputpath, outputpath)
-    sourceGif.get_target_gif(2)  # æ‰¾å‡ºæ–‡ä»¶å¤§å°è¶…è¿‡2Mçš„gif
-    sourceGif.resize(0.8)  # ç¼©å°ä¸ºåŸå…ˆçš„0.
-    check_del(outputpath)  #æ£€æŸ¥æ˜¯å¦è¿˜æœ‰è¶…é™å›¾ç‰‡ï¼Œå¹¶é€’å½’å¤„ç†
+    sourceGif.get_target_gif(2)  # ÕÒ³öÎÄ¼ş´óĞ¡³¬¹ı2MµÄgif
+    sourceGif.resize(0.8)  # ËõĞ¡ÎªÔ­ÏÈµÄ0.
+    check_del(outputpath)  #¼ì²éÊÇ·ñ»¹ÓĞ³¬ÏŞÍ¼Æ¬£¬²¢µİ¹é´¦Àí
     reverse(outputpath)
