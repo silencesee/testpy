@@ -10,7 +10,7 @@ import sys
 import urllib
 import urllib2
 
-from Done.check import checkrep
+from Done.check import *
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -35,17 +35,18 @@ while True:
     uri = 'http://platform.sina.com.cn/slide/album?app_key=2733610594&format=json&ch_id=77&num=20&page=' + str(
         j) + '&jsoncallback=getDataJson'  # 获取json地址
     # 处理json
-    if checkrep(uri, onlyset, pkfile):  # 检查链接是否已经下载过
-        res0 = urllib2.urlopen(uri)
-        html0 = res0.read()
-        html0 = html0.decode('unicode_escape')
-        source = json.loads(html0[12:-1])
-        for pic in source[u'data']:  # 批量下载图片并按照标题命名
-            filename = rootpath+'\\'+pic[u'name'] + '.gif'
-            filename = re.sub(r'[\\\\/\:\*\?\"\<\>\|\,]+(\,[^\\\\/\:\*\?\"\<\>\|\,]+)*', '', filename)  # 处理不合规的文件名称
-            temp_adress = pic[u'img_url']
-            temp_adress = temp_adress.split('/')
-            source_adress = 'http://storage.slide.news.sina.com.cn/slidenews/77_ori/' + temp_adress[-2] + '/' + \
-                            temp_adress[-1]
+
+    res0 = urllib2.urlopen(uri)
+    html0 = res0.read()
+    html0 = html0.decode('unicode_escape')
+    source = json.loads(html0[12:-1])
+    for pic in source[u'data']:  # 批量下载图片并按照标题命名
+        filename =pic[u'name'] + '.gif'
+        filename =  rootpath+'\\'+ namefix(filename)  # 处理不合规的文件名称
+        temp_adress = pic[u'img_url']
+        temp_adress = temp_adress.split('/')
+        source_adress = 'http://storage.slide.news.sina.com.cn/slidenews/77_ori/' + temp_adress[-2] + '/' + \
+                        temp_adress[-1]
+        if checkrep(source_adress, onlyset, pkfile):  # 检查链接是否已经下载过
             if not os.path.exists(filename.decode('utf-8')):  # 检查文件是否存在
                 urllib.urlretrieve(source_adress.encode('ascii'), filename)
