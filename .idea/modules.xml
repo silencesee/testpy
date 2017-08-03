@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../snz/matrixpy/.idea/periodpy.iml" filepath="$PROJECT_DIR$/../snz/matrixpy/.idea/periodpy.iml" />
       <module fileurl="file://Z:\develop\python\matrixpy\.idea\periodpy.iml" filepath="Z:\develop\python\matrixpy\.idea\periodpy.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/testpy.iml" filepath="$PROJECT_DIR$/.idea/testpy.iml" />
     </modules>

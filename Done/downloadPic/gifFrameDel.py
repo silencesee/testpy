@@ -2,7 +2,7 @@
 from __future__ import division
 from PIL import Image, ImageSequence
 import pandas as pd
-import random
+import random,shutil
 import os
 from math import sqrt
 
@@ -52,6 +52,7 @@ class Gi(object):
         self.gifInfo = pd.concat([full_fname, file_n, gif_b, width, heigh, del_rate, resize_rate], axis=1)
         self.gifInfo.columns = ['path', 'filename', 'gsize', 'width', 'heigh', 'delRate', 'resizeRate']
         if size_gate > 0:
+            self.gifFit = self.gifInfo[self.gifInfo.gsize < size_gate]
             self.gifInfo = self.gifInfo[self.gifInfo.gsize > size_gate]
 
         return
@@ -65,6 +66,9 @@ class Gi(object):
                 [(os.popen(
                     'gifsicle.exe  --scale ' + str(x[1].resizeRate) + ' ' + x[1].path + ' > ' + self.outputPath + '\\' +
                     x[1].filename)).read() for x in self.gifInfo.iterrows()]
+                print ''
+
+                [shutil.copy(x, self.outputPath) for x in self.gifFit.path]
             return
         else:
 
@@ -76,6 +80,7 @@ class Gi(object):
                      os.popen(
                          'gifsicle.exe  --scale ' + str(w_gate) + ' ' + x[1].path + ' > ' + self.outputPath + '\\' + x[
                              1].filename)).read() for x in self.gifInfo.iterrows()]
+                [shutil.copy(x, self.outputPath) for x in self.gifFit.path]
             return
 
     def random_del(self):

@@ -1,5 +1,5 @@
 # encoding: UTF-8
-import pickle, re, json
+import pickle, re, json,time,random
 from Done.Encryption import Encryption
 
 
@@ -9,8 +9,12 @@ def checkrep(uri, onlyset, pkfile):  # 通过pickle文件检查历史重复记�
         onlyset.add(hasvalue)
         with open(pkfile, 'wb') as output:
             pickle.dump(onlyset, output)
+            print '访问 '+uri
+            time.sleep(random.choice(range(5)))
         return True
     else:
+        print '已访问 ' + uri
+        time.sleep(random.choice(range(10)))
         return False
 
 
