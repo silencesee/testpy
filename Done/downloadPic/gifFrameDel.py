@@ -34,7 +34,11 @@ class Gi(object):
                 if filename[-3:] == 'gif' and filename[0:7] != 'Reverse':
                     pic_path = parent + '\\' + filename
                     full_fname += [pic_path]
-                    file_format = os.stat(pic_path)  # 获取文件格式
+                    try:
+
+                        file_format = os.stat(pic_path)  # 获取文件格式
+                    except:
+                        print ''
                     file_size += [file_format.st_size / 1024 / 1024]  #
                     file_n += [filename]
                     del_rate += [(file_size[-1] - 1.85) / file_size[-1]]
