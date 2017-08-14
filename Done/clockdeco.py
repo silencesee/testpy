@@ -20,3 +20,4 @@ def clockdeco(func):
         return result
 
     return clocked
+

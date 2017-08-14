@@ -2,35 +2,26 @@
 
 from data import *
 import time
-from strategyTog import StrategyTog
-
+from strategy import Strategy_Inst
+from globalVars import *
+from analysis import *
 
 if __name__ == '__main__':
-    global g_dt_index
     start = time.clock()
-    # instruments = ['m', 'rb', 'cu', 'ag', 'bu', 'a', 'c', 'CF', 'i', 'j', 'jm', 'l', 'MA', 'ni', 'p', 'pp', 'RM',
-    #                'ru', 'SR', 'TA', 'y', 'zn', 'jd', 'al', 'cs', 'au', 'sn', 'hc', 'ZC', 'OI', 'v', 'pb', 'FG',
-    #                'TF']
+    #  数据初始化
+    product_data = load_data()  # 载入数据
+    timelist, dataKeys = align_data(product_data)  # 数据对齐，并且输出配置数据里面指定的基频时间轴
+    matrix = make_matrix(product_data)  # 数据矩阵化
 
+    #  策略初始化
+    strategy_1 = Strategy_Inst(timelist, dataKeys)  # 策略实例化
 
-
-    product_data= load_data()  # 载入数据
-    align_data(product_data)  # 数据对齐
-
-    make_martrix(product_data)  # 数据矩阵化
-
-    strategy_1 = StrategyTog('min15')#策略实例化
-    #
-    # times = list(g_dt_index['min15'])
-    # times.sort()
-    #
-    # strategy_1.init(instruments, times)
-    # strategy_1.process()
+    strategy_1.run()
     # # cProfile.run('strategy_1.process()', 'myfunction_prof')#性能分析
     #
     # #
     # # strategy_1.statistics()
-    # strategy_1.seq_statistics()
+    result = Statistics(strategy_1.recorder)
     #
     # sharp = strategy_1.calc_sharp()
     # print 'sharp: %f' % sharp
