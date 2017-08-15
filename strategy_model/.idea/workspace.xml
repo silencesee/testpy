@@ -80,11 +80,10 @@
       <file leaf-file-name="strategy_model.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/strategy_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="379">
-              <caret line="252" column="59" lean-forward="true" selection-start-line="252" selection-start-column="59" selection-end-line="252" selection-end-column="59" />
+            <state relative-caret-position="250">
+              <caret line="63" column="12" lean-forward="false" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="53" />
               <folding>
                 <element signature="e#20#38#0" expanded="true" />
-                <element signature="e#2007#2260#0" expanded="false" />
                 <element signature="e#2327#2937#0" expanded="false" />
               </folding>
             </state>
@@ -717,7 +716,6 @@
           <caret line="225" column="40" lean-forward="true" selection-start-line="225" selection-start-column="40" selection-end-line="225" selection-end-column="40" />
           <folding>
             <element signature="e#20#38#0" expanded="true" />
-            <element signature="e#2007#2260#0" expanded="false" />
             <element signature="e#2327#2937#0" expanded="false" />
           </folding>
         </state>
@@ -785,7 +783,6 @@
           <caret line="84" column="0" lean-forward="false" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
           <folding>
             <element signature="e#20#38#0" expanded="true" />
-            <element signature="e#2007#2260#0" expanded="false" />
             <element signature="e#2327#2937#0" expanded="false" />
           </folding>
         </state>
@@ -858,7 +855,6 @@
           <caret line="32" column="43" lean-forward="false" selection-start-line="32" selection-start-column="43" selection-end-line="32" selection-end-column="43" />
           <folding>
             <element signature="e#20#38#0" expanded="true" />
-            <element signature="e#2007#2260#0" expanded="false" />
             <element signature="e#2327#2937#0" expanded="false" />
           </folding>
         </state>
@@ -993,6 +989,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-74">
           <caret line="752" column="8" lean-forward="false" selection-start-line="752" selection-start-column="8" selection-end-line="752" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1093,11 +1090,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/strategy_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="252" column="59" lean-forward="true" selection-start-line="252" selection-start-column="59" selection-end-line="252" selection-end-column="59" />
+        <state relative-caret-position="250">
+          <caret line="63" column="12" lean-forward="false" selection-start-line="63" selection-start-column="12" selection-end-line="63" selection-end-column="53" />
           <folding>
             <element signature="e#20#38#0" expanded="true" />
-            <element signature="e#2007#2260#0" expanded="false" />
             <element signature="e#2327#2937#0" expanded="false" />
           </folding>
         </state>
