@@ -1,9 +1,5 @@
 # encoding: UTF-8
-
 import pandas as pd
-import  numpy as np
-from pandas import Series, DataFrame
-from config import *
 from globalVars import *
 
 
@@ -19,18 +15,23 @@ def load_data():  # 载入数据，支持多品种多周期同时载入
                 contact.dataContainer[inst][per] = pd.read_csv('./data/%s_%s.csv' % (inst, per), parse_dates=['date'],
                                                         date_parser=date_parse)
                 contact.dataContainer[inst][per].index = contact.dataContainer[inst][per].date  # 指定数据表的索引列
+            contact.databegin[inst][per] = contact.dataContainer[inst][per].date
+
     return contact.dataContainer
 
 
 def align_data(data):  # 按照时间索引重排序,数据结构：每个品种一个表，每个表中列索引为open、close...，行索引为时间
     for per in periods:  # 每一个周期序列分别重索引
-        index = reduce(lambda a, b: a.append(b), (lambda a: [a[0][1][per].index])(data.items()))  # 去重处理
-        index = index.unique()
+
+        index = reduce(lambda a, b: a.append(b), [(lambda a:data[a][per].index)(key) for key in data.keys()])  # 去重处理,多个品种的时间轴合并在一起，构造一个完全版的时间轴
+        index = index.unique().values
+        index.sort()
         for inst in instruments:
             data[inst][per] = data[inst][per].reindex(index).sort_index()  # 按照时间索引重排序
 
         g_dt_index[per] = data[inst][per].index  # 刷新全局变量，各周期时间轴
     dataKeys = data[inst][per].keys()#输出行情数据因子矩阵
+    dataKeys=dataKeys.drop('date')
     timelist = list(g_dt_index[basic_period])#策略基频时间轴
     timelist.sort()  # 这里需要检查是否需要排序
     return timelist, dataKeys
@@ -58,7 +59,7 @@ def make_matrix(data):  # 数据矩阵化,重新修改了，索引直接可以�
         g_data[per]['open'] = np.array(frame_open)
         g_data[per]['high'] = np.array(frame_high)
         g_data[per]['low'] = np.array(frame_low)
-        g_data[per]['vol'] = np.array(frame_volume)
+        g_data[per]['volume'] = np.array(frame_volume)
         g_data[per]['opi'] = np.array(frame_opi)
 
     return

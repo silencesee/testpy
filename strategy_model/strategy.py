@@ -1,9 +1,8 @@
 # encoding: UTF-8
 
 from strategy_model import *
-from data import *
 from analysis import *
-
+from timeit import timeit
 np.seterr(invalid='ignore')  # 忽略nan比较时的警告
 
 
@@ -11,41 +10,40 @@ class Strategy_Inst(Strategy_model):  # 策略实例，继承自策略基类
     def __init__(self, timelist, dataKeys):  # 策略运行参数
         super(Strategy_Inst, self).__init__(timelist, dataKeys)  # 调用父类方法
 
-    def init_params(self):  # 策略逻辑参数
+    def int_params(self):  # 策略逻辑参数,可以在这里初始化一些循环体外的变量或者方法
         self._params['follow_stop'] = 0.01
         self._params['nan_rate'] = 0.4
         self._params['majority_rate'] = 0.9  # 设置全市场共振阀值
-        self._params['money'] = 100000
-        self.strategyVar()  # 策略初始化时期需要优先计算的变量
 
-    def strategyVar(self):  # 策略常用变量构造
-        # self._lastHighPrice = {}
-        # self._lastLowPrice = {}
-        # 旧的写法，兼容数据不是numpy.array的格式
-        self.diff = np.zeros((self._length, len(instruments)))
-        self.diff[1:] = (np.array(self.close[1:]) - np.array(self.close[0:-1])) / np.array(self.close[0:-1])
+    def int_vars(self):  # 序列变量申明段类似于TB里面的series
+        size = np.shape(self.close)
+        self.rate = np.zeros(size)
+        pass
 
+    # @clockdeco
     def strategy_body(self, pos):  # 具体策略主体
+        if pos > 2:
 
-        direct, rate = self.calc_indicator(pos)
+            direct, rate = self.calc_indicator(pos)
 
-        lots = floor(self.params['money'] / (contact.unit * self.open[pos] * contact.margin))
+            lots = floor(money / (contact.unit * self.open[pos] * contact.margin))
 
-        if direct > 0:
-            maxrate, location = findmax(rate)  # 求收益率极值
-            self.order(lots, self.open[pos], location)
-        elif direct < 0:
-            minrate, location = findmin(rate)  # 求收益率极值
-            self.order(-1 * lots, self.open[pos], location)
-            # print pos
-            # print self.open[pos]
+            if direct > 0:
+                maxrate, location = findmax(rate)  # 求收益率极值
+                self.order(lots, self.open[pos], location)
+            elif direct < 0:
+                minrate, location = findmin(rate)  # 求收益率极值
+                self.order(-1 * lots, self.open[pos], location)
+                # print pos
+                # print self.open[pos]
+
 
     # @clockdeco
     def calc_indicator(self, pos):  # 策略内部实现的算法品种对比统计强弱度
+        # a = time.time()
+        rate = (np.array(self.close[pos - 1]) - np.array(self.close[pos - 2])) / np.array(self.close[pos - 2])  # 计算收益率
 
-        rate = self.diff[pos]  # 计算收益率,修改后时间从0.002变成0
-
-        # rate = (self.close[pos] - self.close[pos - 1]) / self.close[pos - 1]  # 计算收益率
+        # print (str(pos) +'耗时 [%0.8fs] ' % (time.time()-a))
         rise = rate > 0  # 逻辑变量构造
         fall = rate < 0  # 逻辑变量构造
         tot_len = len(rate)  # 当前时刻总交易品种
