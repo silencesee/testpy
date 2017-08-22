@@ -71,8 +71,8 @@
       <file leaf-file-name="strategy_model.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/strategy_model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="363">
-              <caret line="147" column="8" lean-forward="true" selection-start-line="147" selection-start-column="8" selection-end-line="147" selection-end-column="60" />
+            <state relative-caret-position="-1216">
+              <caret line="24" column="25" lean-forward="false" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -122,6 +122,7 @@
       <find>traderable</find>
       <find>trade</find>
       <find>tradeAble</find>
+      <find>traderAble</find>
     </findStrings>
     <replaceStrings>
       <replace>marketPostion</replace>
@@ -944,6 +945,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="393">
           <caret line="1590" column="0" lean-forward="false" selection-start-line="1590" selection-start-column="0" selection-end-line="1590" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1099,8 +1101,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/strategy_model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="363">
-          <caret line="147" column="8" lean-forward="true" selection-start-line="147" selection-start-column="8" selection-end-line="147" selection-end-column="60" />
+        <state relative-caret-position="-1216">
+          <caret line="24" column="25" lean-forward="false" selection-start-line="24" selection-start-column="25" selection-end-line="24" selection-end-column="25" />
           <folding />
         </state>
       </provider>
